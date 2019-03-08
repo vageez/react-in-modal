@@ -26,8 +26,9 @@ const config = {
 }
 
 class Dialog {
-    constructor(dialog) {
+    constructor(dialog, close) {
         this.dialog = dialog;
+        this.close = close;
         this.focusedElBeforeOpen = undefined;
         var focusableEls = this.dialog.querySelectorAll('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex="0"]');
         this.focusableEls = Array.prototype.slice.call(focusableEls);
@@ -81,28 +82,27 @@ Dialog.prototype._handleKeyDown = function (e) {
     }
 };
 
-const inModal = WrappedComponent => {
+const inModal = config => WrappedComponent => {
     class inModal extends Component {
-        componentDidMount() {
-            new Dialog(document.querySelector('#vageez-dialog'))
-        }
         close() {
-            console.log('close')
-            this.props.close && this.props.close()
+            config.close && config.close()
         }        
+        componentDidMount() {
+            new Dialog(document.querySelector('#react-in-modal-dialog'), this.close)
+        }
         render() {
 
             const node = document.createElement('div')
-            node.setAttribute('id', 'vageez-modal')
+            node.setAttribute('id', 'react-in-modal')
             document.getElementsByTagName('body')[0].appendChild(node)
 
             return createPortal(
-                <div id="vageez-dialog-overlay" style={config.style.dialogOverlayStyle} onClick={() => this.close()}>
-                    <div id="vageez-dialog" style={config.style.dialogStyle} role="dialog" aria-labelledby={config.aria.labelledBy} aria-describedby={config.aria.describedBy}>
+                <div id="react-in-modal-overlay" style={config.style.dialogOverlayStyle} onClick={() => this.close()}>
+                    <div id="react-in-modal-dialog" style={config.style.dialogStyle} role="dialog" aria-labelledby={config.aria.labelledBy} aria-describedby={config.aria.describedBy}>
                         <WrappedComponent />
                     </div>
                 </div>,
-                document.querySelector('#vageez-modal'))
+                document.querySelector('#react-in-modal'))
         }
     }
 

@@ -1,60 +1,66 @@
 import React from 'react';
+import { shallow } from 'enzyme'
+import sinon from 'sinon'
+import inModal from '../index';
 
-import {shallow, mount, render} from 'enzyme';
-import {expect} from 'chai';
-import sinon from 'sinon';
+const close = () => console.log('close function')
 
-import MyComponent from '../index';
+const config = {
+    close : close(),
+    style: {
+        dialogOverlayStyle: {
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0,0,0,0.7)'
+        },
+        dialogStyle: {
+            width: '80%',
+            margin: '0 auto',
+            backgroundColor: 'white',
+        }
+    },
+    aria: {
+        labelledBy: 'dialog-title',
+        describedBy: 'dialog-description'
+    }
+}
+const ModalContent = () =>
+    <div>
+        <h1 id='dialog-title'>Site Navigation</h1>
+        <p id='dialog-description' className='sr-only'>Description goes here</p>
+        <nav>
+            <ul>
+                <li><a href='one.html'>Link One</a></li>
+                <li><a href='two.html'>Link Two</a></li>
+                <li><a href='three.html'>Link Three</a></li>
+            </ul>
+        </nav>
+    </div>
 
-// Demo tests
+const ComponentToTest = inModal(config)(ModalContent)
 
-// Shallow Rendering
-// https://github.com/airbnb/enzyme/blob/master/docs/api/shallow.md
-describe('Shallow Rendering', () => {
-
-    it('to have three `.icon-test`s', () => {
-        const wrapper = shallow(<MyComponent />);
-        expect(wrapper.find('.icon-test')).to.have.length(3);
-    });
-
-    it('simulates click events', () => {
-        const buttonClick = sinon.spy();
-        const wrapper = shallow(
-          <MyComponent handleClick={buttonClick} />
-        );
-        wrapper.find('button').simulate('click');
-        expect(buttonClick.calledOnce).to.equal(true);
-    });
-
-});
-
-// Full DOM Rendering
-// https://github.com/airbnb/enzyme/blob/master/docs/api/mount.md
-describe('Full DOM Rendering', () => {
-
-    it('allows us to set props', () => {
-        const wrapper = mount(<MyComponent bar='baz' />);
-        expect(wrapper.props().bar).to.equal('baz');
-        wrapper.setProps({ bar: 'foo' });
-        expect(wrapper.props().bar).to.equal('foo');
-    });
-
-    it('calls componentDidMount', () => {
-        sinon.spy(MyComponent.prototype, 'componentDidMount');
-        const wrapper = mount(<MyComponent />);
-        expect(MyComponent.prototype.componentDidMount.calledOnce).to.be.true;
-        MyComponent.prototype.componentDidMount.restore();
-    });
-
-});
-
-// Static Rendered Markup
-// https://github.com/airbnb/enzyme/blob/master/docs/api/render.md
-describe('Static Rendered Markup', () => {
-
-    it('renders three `.icon-test`s', () => {
-        const wrapper = render(<MyComponent />);
-        expect(wrapper.find('.icon-test').length).to.equal(3);
-    });
-
-});
+describe('rendering', () => {
+  let wrapper, showUrl
+   beforeEach(() => {
+     props =  {
+       location: { pathname: 'testUrl1'},
+       showUrl: (url) => {}
+     }
+     showUrl = sinon.stub(props, 'showUrl')
+   })
+   afterEach(() => {
+     showUrl.reset()
+   })
+   it('ComponentDidMount', () => {
+     wrapper = shallow(<ComponentToTest  {...props}/>
+     expect(showUrl.calledOnce).toBe(true)
+   })
+   it('componentWillReceiveProps', () => {
+    wrapper = shallow(<Mycomponent  {...props}/>)
+    wrapper.setProps({location: { pathname: 'testUrl2'}})
+    expect(showUrl.calledOnce).toBe(true)
+   })
+})
