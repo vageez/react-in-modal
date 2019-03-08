@@ -97,10 +97,11 @@
         }
     };
 
-    var Dialog = function Dialog(dialog) {
+    var Dialog = function Dialog(dialog, close) {
         _classCallCheck(this, Dialog);
 
         this.dialog = dialog;
+        this.close = close;
         this.focusedElBeforeOpen = undefined;
         var focusableEls = this.dialog.querySelectorAll('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex="0"]');
         this.focusableEls = Array.prototype.slice.call(focusableEls);
@@ -164,15 +165,14 @@
             }
 
             _createClass(inModal, [{
-                key: 'componentDidMount',
-                value: function componentDidMount() {
-                    new Dialog(document.querySelector('#vageez-dialog'));
-                }
-            }, {
                 key: 'close',
                 value: function close() {
-                    console.log('close');
                     this.props.close && this.props.close();
+                }
+            }, {
+                key: 'componentDidMount',
+                value: function componentDidMount() {
+                    new Dialog(document.querySelector('#vageez-dialog'), this.props.close);
                 }
             }, {
                 key: 'render',
@@ -180,20 +180,20 @@
                     var _this2 = this;
 
                     var node = document.createElement('div');
-                    node.setAttribute('id', 'vageez-modal');
+                    node.setAttribute('id', 'react-in-modal');
                     document.getElementsByTagName('body')[0].appendChild(node);
 
                     return (0, _reactDom.createPortal)(_react2.default.createElement(
                         'div',
-                        { id: 'vageez-dialog-overlay', style: config.style.dialogOverlayStyle, onClick: function onClick() {
+                        { id: 'react-in-modal-overlay', style: this.props.style.dialogOverlayStyle, onClick: function onClick() {
                                 return _this2.close();
                             } },
                         _react2.default.createElement(
                             'div',
-                            { id: 'vageez-dialog', style: config.style.dialogStyle, role: 'dialog', 'aria-labelledby': config.aria.labelledBy, 'aria-describedby': config.aria.describedBy },
+                            { id: 'react-in-modal-dialog', style: this.props.style.dialogStyle, role: 'dialog', 'aria-labelledby': this.props.aria.labelledBy, 'aria-describedby': this.props.aria.describedBy },
                             _react2.default.createElement(WrappedComponent, null)
                         )
-                    ), document.querySelector('#vageez-modal'));
+                    ), document.querySelector('#react-in-modal'));
                 }
             }]);
 

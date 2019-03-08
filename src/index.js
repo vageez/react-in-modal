@@ -1,30 +1,6 @@
 import React, { Component } from 'react';
 import { createPortal } from 'react-dom';
 
-const config = {
-    style: {
-        dialogOverlayStyle: {
-            zIndex: 2,
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0,0,0,0.7)'
-        },
-        dialogStyle: {
-            zIndex: 3,
-            width: '80%',
-            margin: '0 auto',
-            backgroundColor: 'white',
-        }
-    },
-    aria: {
-        labelledBy: 'dialog-title',
-        describedBy: 'dialog-description'
-    }
-}
-
 class Dialog {
     constructor(dialog, close) {
         this.dialog = dialog;
@@ -82,13 +58,13 @@ Dialog.prototype._handleKeyDown = function (e) {
     }
 };
 
-const inModal = config => WrappedComponent => {
+const inModal = WrappedComponent => {
     class inModal extends Component {
         close() {
-            config.close && config.close()
+            this.props.close && this.props.close()
         }        
         componentDidMount() {
-            new Dialog(document.querySelector('#react-in-modal-dialog'), this.close)
+            new Dialog(document.querySelector('#vageez-dialog'), this.props.close)
         }
         render() {
 
@@ -97,8 +73,8 @@ const inModal = config => WrappedComponent => {
             document.getElementsByTagName('body')[0].appendChild(node)
 
             return createPortal(
-                <div id="react-in-modal-overlay" style={config.style.dialogOverlayStyle} onClick={() => this.close()}>
-                    <div id="react-in-modal-dialog" style={config.style.dialogStyle} role="dialog" aria-labelledby={config.aria.labelledBy} aria-describedby={config.aria.describedBy}>
+                <div id="react-in-modal-overlay" style={this.props.style.dialogOverlayStyle} onClick={() => this.close()}>
+                    <div id="react-in-modal-dialog" style={this.props.style.dialogStyle} role="dialog" aria-labelledby={this.props.aria.labelledBy} aria-describedby={this.props.aria.describedBy}>
                         <WrappedComponent />
                     </div>
                 </div>,
