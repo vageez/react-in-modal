@@ -73,30 +73,6 @@
         }
     }
 
-    var config = {
-        style: {
-            dialogOverlayStyle: {
-                zIndex: 2,
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                backgroundColor: 'rgba(0,0,0,0.7)'
-            },
-            dialogStyle: {
-                zIndex: 3,
-                width: '80%',
-                margin: '0 auto',
-                backgroundColor: 'white'
-            }
-        },
-        aria: {
-            labelledBy: 'dialog-title',
-            describedBy: 'dialog-description'
-        }
-    };
-
     var Dialog = function Dialog(dialog, close) {
         _classCallCheck(this, Dialog);
 

@@ -64,21 +64,21 @@ const inModal = WrappedComponent => {
             this.props.close && this.props.close()
         }        
         componentDidMount() {
-            new Dialog(document.querySelector('#vageez-dialog'), this.props.close)
+            new Dialog(document.querySelector('#react-in-modal'), this.props.close)
         }
         render() {
 
             const node = document.createElement('div')
-            node.setAttribute('id', 'react-in-modal')
+            node.setAttribute('id', 'react-in-modal-root')
             document.getElementsByTagName('body')[0].appendChild(node)
 
             return createPortal(
                 <div id="react-in-modal-overlay" style={this.props.style.dialogOverlayStyle} onClick={() => this.close()}>
-                    <div id="react-in-modal-dialog" style={this.props.style.dialogStyle} role="dialog" aria-labelledby={this.props.aria.labelledBy} aria-describedby={this.props.aria.describedBy}>
+                    <div id="react-in-modal" style={this.props.style.dialogStyle} role="dialog" aria-labelledby={this.props.aria.labelledBy} aria-describedby={this.props.aria.describedBy}>
                         <WrappedComponent />
                     </div>
                 </div>,
-                document.querySelector('#react-in-modal'))
+                document.querySelector('#react-in-modal-root'))
         }
     }
 
