@@ -25,6 +25,12 @@
         };
     }
 
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+
     var _createClass = function () {
         function defineProperties(target, props) {
             for (var i = 0; i < props.length; i++) {
@@ -67,67 +73,54 @@
         if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
     }
 
-    function _classCallCheck(instance, Constructor) {
-        if (!(instance instanceof Constructor)) {
-            throw new TypeError("Cannot call a class as a function");
-        }
-    }
-
     var Dialog = function Dialog(dialog, close) {
-        _classCallCheck(this, Dialog);
 
-        this.dialog = dialog;
-        this.close = close;
-        this.focusedElBeforeOpen = undefined;
-        var focusableEls = this.dialog.querySelectorAll('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex="0"]');
-        this.focusableEls = Array.prototype.slice.call(focusableEls);
-        this.firstFocusableEl = this.focusableEls[0];
-        this.lastFocusableEl = this.focusableEls[this.focusableEls.length - 1];
-        var _Dialog = this;
-        this.focusedElBeforeOpen = document.activeElement;
-        this.dialog.addEventListener('keydown', function (e) {
-            _Dialog._handleKeyDown(e);
+        var allFocusableEls = dialog.querySelectorAll('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex="0"]');
+        var focusableEls = Array.prototype.slice.call(allFocusableEls);
+        var firstFocusableEl = focusableEls[0];
+        var lastFocusableEl = focusableEls[focusableEls.length - 1];
+        dialog.addEventListener('keydown', function (e) {
+            handleKeyDown(e, firstFocusableEl, lastFocusableEl, focusableEls, close);
         });
-        this.firstFocusableEl && this.firstFocusableEl.focus();
-    };
 
-    Dialog.prototype._handleKeyDown = function (e) {
+        firstFocusableEl && firstFocusableEl.focus();
 
-        var Dialog = this;
-        var KEY_TAB = 9;
-        var KEY_ESC = 27;
+        var handleKeyDown = function handleKeyDown(e, firstFocusableEl, lastFocusableEl, focusableEls, close) {
+            var KEY_TAB = 9;
+            var KEY_ESC = 27;
 
-        function handleBackwardTab() {
-            if (document.activeElement === Dialog.firstFocusableEl) {
-                e.preventDefault();
-                Dialog.lastFocusableEl.focus();
-            }
-        }
-        function handleForwardTab() {
-            if (document.activeElement === Dialog.lastFocusableEl) {
-                e.preventDefault();
-                Dialog.firstFocusableEl.focus();
-            }
-        }
-
-        switch (e.keyCode) {
-            case KEY_TAB:
-                if (Dialog.focusableEls.length === 1) {
+            var handleBackwardTab = function handleBackwardTab() {
+                if (document.activeElement === firstFocusableEl) {
                     e.preventDefault();
+                    lastFocusableEl.focus();
+                }
+            };
+            var handleForwardTab = function handleForwardTab() {
+                if (document.activeElement === lastFocusableEl) {
+                    e.preventDefault();
+                    firstFocusableEl.focus();
+                }
+            };
+
+            switch (e.keyCode) {
+                case KEY_TAB:
+                    if (focusableEls.length === 1) {
+                        e.preventDefault();
+                        break;
+                    }
+                    if (e.shiftKey) {
+                        handleBackwardTab();
+                    } else {
+                        handleForwardTab();
+                    }
                     break;
-                }
-                if (e.shiftKey) {
-                    handleBackwardTab();
-                } else {
-                    handleForwardTab();
-                }
-                break;
-            case KEY_ESC:
-                Dialog.close();
-                break;
-            default:
-                break;
-        }
+                case KEY_ESC:
+                    close();
+                    break;
+                default:
+                    break;
+            }
+        };
     };
 
     var inModal = function inModal(WrappedComponent) {
@@ -148,28 +141,31 @@
             }, {
                 key: 'componentDidMount',
                 value: function componentDidMount() {
-                    new Dialog(document.querySelector('#vageez-dialog'), this.props.close);
+                    Dialog(document.querySelector('#react-in-modal'), this.props.close);
                 }
             }, {
                 key: 'render',
                 value: function render() {
-                    var _this2 = this;
+                    var _props = this.props,
+                        close = _props.close,
+                        style = _props.style,
+                        aria = _props.aria;
 
                     var node = document.createElement('div');
-                    node.setAttribute('id', 'react-in-modal');
+                    node.setAttribute('id', 'react-in-modal-root');
                     document.getElementsByTagName('body')[0].appendChild(node);
 
                     return (0, _reactDom.createPortal)(_react2.default.createElement(
                         'div',
-                        { id: 'react-in-modal-overlay', style: this.props.style.dialogOverlayStyle, onClick: function onClick() {
-                                return _this2.close();
+                        { id: 'react-in-modal-overlay', style: style.modalOverlay, onClick: function onClick() {
+                                return close();
                             } },
                         _react2.default.createElement(
                             'div',
-                            { id: 'react-in-modal-dialog', style: this.props.style.dialogStyle, role: 'dialog', 'aria-labelledby': this.props.aria.labelledBy, 'aria-describedby': this.props.aria.describedBy },
+                            { id: 'react-in-modal', style: style.modal, role: 'dialog', 'aria-labelledby': aria.labelledBy, 'aria-describedby': this.props.aria.describedBy },
                             _react2.default.createElement(WrappedComponent, null)
                         )
-                    ), document.querySelector('#react-in-modal'));
+                    ), document.querySelector('#react-in-modal-root'));
                 }
             }]);
 

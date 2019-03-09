@@ -1,80 +1,74 @@
 import React, { Component } from 'react';
 import { createPortal } from 'react-dom';
 
-class Dialog {
-    constructor(dialog, close) {
-        this.dialog = dialog;
-        this.close = close;
-        this.focusedElBeforeOpen = undefined;
-        var focusableEls = this.dialog.querySelectorAll('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex="0"]');
-        this.focusableEls = Array.prototype.slice.call(focusableEls);
-        this.firstFocusableEl = this.focusableEls[0];
-        this.lastFocusableEl = this.focusableEls[this.focusableEls.length - 1];
-        var Dialog = this;
-        this.focusedElBeforeOpen = document.activeElement;
-        this.dialog.addEventListener('keydown', function (e) {
-            Dialog._handleKeyDown(e);
-        });
-        this.firstFocusableEl && this.firstFocusableEl.focus();
+const Dialog = (dialog, close) => {
+    
+    const allFocusableEls = dialog.querySelectorAll('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex="0"]')
+    const focusableEls = Array.prototype.slice.call(allFocusableEls)
+    const firstFocusableEl = focusableEls[0]
+    const lastFocusableEl = focusableEls[focusableEls.length - 1]
+    dialog.addEventListener('keydown', function (e) {
+        handleKeyDown(e, firstFocusableEl, lastFocusableEl, focusableEls, close)
+    });
+
+    firstFocusableEl && firstFocusableEl.focus()
+
+    const handleKeyDown = (e, firstFocusableEl, lastFocusableEl, focusableEls, close) => {
+        const KEY_TAB = 9
+        const KEY_ESC = 27
+
+        const handleBackwardTab = () => {
+            if (document.activeElement === firstFocusableEl) {
+                e.preventDefault();
+                lastFocusableEl.focus();
+            }
+        }
+        const handleForwardTab = () => {
+            if (document.activeElement === lastFocusableEl) {
+                e.preventDefault();
+                firstFocusableEl.focus();
+            }
+        }
+
+        switch (e.keyCode) {
+            case KEY_TAB:
+                if (focusableEls.length === 1) {
+                    e.preventDefault();
+                    break;
+                }
+                if (e.shiftKey) {
+                    handleBackwardTab();
+                } else {
+                    handleForwardTab();
+                }
+                break;
+            case KEY_ESC:
+                close();
+                break;
+            default:
+                break;
+        }
     }
 }
-
-Dialog.prototype._handleKeyDown = function (e) {
-
-    var Dialog = this;
-    var KEY_TAB = 9;
-    var KEY_ESC = 27;
-
-    function handleBackwardTab() {
-        if (document.activeElement === Dialog.firstFocusableEl) {
-            e.preventDefault();
-            Dialog.lastFocusableEl.focus();
-        }
-    }
-    function handleForwardTab() {
-        if (document.activeElement === Dialog.lastFocusableEl) {
-            e.preventDefault();
-            Dialog.firstFocusableEl.focus();
-        }
-    }
-
-    switch (e.keyCode) {
-    case KEY_TAB:
-        if (Dialog.focusableEls.length === 1) {
-            e.preventDefault();
-            break;
-        }
-        if (e.shiftKey) {
-            handleBackwardTab();
-        } else {
-            handleForwardTab();
-        }
-        break;
-    case KEY_ESC:
-        Dialog.close();
-        break;
-    default:
-        break;
-    }
-};
 
 const inModal = WrappedComponent => {
     class inModal extends Component {
         close() {
             this.props.close && this.props.close()
-        }        
+        }
         componentDidMount() {
-            new Dialog(document.querySelector('#react-in-modal'), this.props.close)
+            Dialog(document.querySelector('#react-in-modal'), this.props.close)
         }
         render() {
-
+            
+            const { close , style, aria } = this.props
             const node = document.createElement('div')
             node.setAttribute('id', 'react-in-modal-root')
             document.getElementsByTagName('body')[0].appendChild(node)
 
             return createPortal(
-                <div id="react-in-modal-overlay" style={this.props.style.dialogOverlayStyle} onClick={() => this.close()}>
-                    <div id="react-in-modal" style={this.props.style.dialogStyle} role="dialog" aria-labelledby={this.props.aria.labelledBy} aria-describedby={this.props.aria.describedBy}>
+                <div id="react-in-modal-overlay" style={style.modalOverlay} onClick={() => close()}>
+                    <div id="react-in-modal" style={style.modal} role="dialog" aria-labelledby={aria.labelledBy} aria-describedby={this.props.aria.describedBy}>
                         <WrappedComponent />
                     </div>
                 </div>,
@@ -84,5 +78,6 @@ const inModal = WrappedComponent => {
 
     return inModal
 }
+
 
 export default inModal;

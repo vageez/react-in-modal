@@ -1,12 +1,13 @@
 {
     "name": "reactinmodal",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "React In Modal. Accessibility friendly with tab trap accepts action to close the modal along with custom styling",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/vageez/react-in-modal.git"
+        "url": "https://github.com/vageez/react-in-modal.git"
     },
     "author": "Angelo Vagenas",
+    "homepage": "https://github.com/vageez/react-in-modal",
     "license": "MIT",
     "keywords": [
         "react-component",
