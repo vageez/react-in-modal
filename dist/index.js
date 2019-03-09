@@ -123,17 +123,17 @@
         };
     };
 
-    var inModal = function inModal(WrappedComponent) {
-        var inModal = function (_Component) {
-            _inherits(inModal, _Component);
+    var InModal = function InModal(WrappedComponent) {
+        var InModal = function (_Component) {
+            _inherits(InModal, _Component);
 
-            function inModal() {
-                _classCallCheck(this, inModal);
+            function InModal() {
+                _classCallCheck(this, InModal);
 
-                return _possibleConstructorReturn(this, (inModal.__proto__ || Object.getPrototypeOf(inModal)).apply(this, arguments));
+                return _possibleConstructorReturn(this, (InModal.__proto__ || Object.getPrototypeOf(InModal)).apply(this, arguments));
             }
 
-            _createClass(inModal, [{
+            _createClass(InModal, [{
                 key: 'close',
                 value: function close() {
                     this.props.close && this.props.close();
@@ -153,6 +153,7 @@
 
                     var node = document.createElement('div');
                     node.setAttribute('id', 'react-in-modal-root');
+                    node.setAttribute('style', 'position: relative; z-index: 2147483647;');
                     document.getElementsByTagName('body')[0].appendChild(node);
 
                     return (0, _reactDom.createPortal)(_react2.default.createElement(
@@ -162,18 +163,18 @@
                             } },
                         _react2.default.createElement(
                             'div',
-                            { id: 'react-in-modal', style: style.modal, role: 'dialog', 'aria-labelledby': aria.labelledBy, 'aria-describedby': this.props.aria.describedBy },
+                            { id: 'react-in-modal', style: style.modal, role: 'dialog', 'aria-labelledby': aria.labelledBy, 'aria-describedby': aria.describedBy },
                             _react2.default.createElement(WrappedComponent, null)
                         )
                     ), document.querySelector('#react-in-modal-root'));
                 }
             }]);
 
-            return inModal;
+            return InModal;
         }(_react.Component);
 
-        return inModal;
+        return InModal;
     };
 
-    exports.default = inModal;
+    exports.default = InModal;
 });
