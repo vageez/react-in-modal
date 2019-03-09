@@ -9,7 +9,7 @@ Our React Component Wrapped in Modal
 /path/components/ModalContent.js
 
 ```
-import inModal from 'react-in-modal';
+import inModal from 'reactinmodal';
 
 const Content = () =>
     <>
