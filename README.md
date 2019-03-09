@@ -9,7 +9,7 @@ Our React Component Wrapped in Modal
 /path/components/ModalContent.js
 
 ```
-import inModal from 'reactinmodal';
+import InModal from 'reactinmodal';
 
 const Content = () =>
     <>
@@ -24,7 +24,7 @@ const Content = () =>
         </nav>
     </>
 
-export default inModal(Content)
+export default InModal(Content)
 
 ```
 

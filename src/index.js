@@ -51,8 +51,8 @@ const Dialog = (dialog, close) => {
     }
 }
 
-const inModal = WrappedComponent => {
-    class inModal extends Component {
+const InModal = WrappedComponent => {
+    class InModal extends Component {
         close() {
             this.props.close && this.props.close()
         }
@@ -64,11 +64,12 @@ const inModal = WrappedComponent => {
             const { close , style, aria } = this.props
             const node = document.createElement('div')
             node.setAttribute('id', 'react-in-modal-root')
+            node.setAttribute('style', 'position: relative; z-index: 2147483647;')
             document.getElementsByTagName('body')[0].appendChild(node)
 
             return createPortal(
                 <div id="react-in-modal-overlay" style={style.modalOverlay} onClick={() => close()}>
-                    <div id="react-in-modal" style={style.modal} role="dialog" aria-labelledby={aria.labelledBy} aria-describedby={this.props.aria.describedBy}>
+                    <div id="react-in-modal" style={style.modal} role="dialog" aria-labelledby={aria.labelledBy} aria-describedby={aria.describedBy}>
                         <WrappedComponent />
                     </div>
                 </div>,
@@ -76,8 +77,8 @@ const inModal = WrappedComponent => {
         }
     }
 
-    return inModal
+    return InModal
 }
 
 
-export default inModal;
+export default InModal;
