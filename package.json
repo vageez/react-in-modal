@@ -1,6 +1,6 @@
 {
     "name": "reactinmodal",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "React In Modal. Accessibility friendly with tab trap accepts action to close the modal along with custom styling",
     "repository": {
         "type": "git",
@@ -47,6 +47,7 @@
         "react-dom": "^16.7.0"
     },
     "dependencies": {
-        "babel-runtime": "^6.6.1"
+        "babel-runtime": "^6.6.1",
+        "prop-types": "^15.7.2"
     }
 }

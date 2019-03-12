@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { createPortal } from 'react-dom';
+import PropTypes from 'prop-types';
 
 const Dialog = (dialog, close) => {
-    
+
     const allFocusableEls = dialog.querySelectorAll('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [tabindex="0"]')
     const focusableEls = Array.prototype.slice.call(allFocusableEls)
     const firstFocusableEl = focusableEls[0]
@@ -51,34 +52,41 @@ const Dialog = (dialog, close) => {
     }
 }
 
-const InModal = WrappedComponent => {
-    class InModal extends Component {
-        close() {
-            this.props.close && this.props.close()
-        }
-        componentDidMount() {
-            Dialog(document.querySelector('#react-in-modal'), this.props.close)
-        }
-        render() {
-            
-            const { close , style, aria } = this.props
-            const node = document.createElement('div')
-            node.setAttribute('id', 'react-in-modal-root')
-            node.setAttribute('style', 'position: relative; z-index: 2147483647;')
-            document.getElementsByTagName('body')[0].appendChild(node)
-
-            return createPortal(
-                <div id="react-in-modal-overlay" style={style.modalOverlay} onClick={() => close()}>
-                    <div id="react-in-modal" style={style.modal} role="dialog" aria-labelledby={aria.labelledBy} aria-describedby={aria.describedBy}>
-                        <WrappedComponent />
-                    </div>
-                </div>,
-                document.querySelector('#react-in-modal-root'))
-        }
+class InModal extends Component {
+    componentDidMount() {
+        Dialog(document.querySelector('#react-in-modal'), this.props.onClose)
     }
-
-    return InModal
+    render() {
+        const { onClose, modalStyle, overlayStyle, ariaLabelledBy, ariaDescribedBy, children } = this.props
+        const modalRoot = document.createElement('div')
+        modalRoot.setAttribute('id', 'react-in-modal-root')
+        modalRoot.setAttribute('style', 'position: relative; z-index: 2147483647;');
+        document.getElementsByTagName('body')[0].appendChild(modalRoot)
+        return createPortal(
+            <div
+                id='react-in-modal-overlay'
+                style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.7)', ...overlayStyle }}
+                onClick={() => onClose()}>
+                <div
+                    id='react-in-modal'
+                    style={{ margin: '0 auto', ...modalStyle }}
+                    role='dialog'
+                    onClick={e => e.stopPropagation()}
+                    aria-labelledby={ariaLabelledBy}
+                    aria-describedby={ariaDescribedBy}>
+                    {children}
+                </div>
+            </div>, document.querySelector('#react-in-modal-root'))
+    }
 }
 
+InModal.propTypes = {
+    onClose: PropTypes.func.isRequired,
+    modalStyle: PropTypes.object,
+    overlayStyle: PropTypes.object,
+    ariaLabelledBy: PropTypes.string,
+    ariaDescribedBy: PropTypes.string,
+    children: PropTypes.node.isRequired,
+}
 
 export default InModal;
