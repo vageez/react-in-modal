@@ -33,7 +33,7 @@ const describedBy = "dialog-description"
 
 const ModalContent = () => {
  return(
-        <InModal onClose={close} ariaLabelledBy={labelledBy} ariaDescribedBy={describedBy} overlayStyle={overlayStyle} modalStyle={modalStyle}>
+        <InModal onClose={closeAction} ariaLabelledBy={labelledBy} ariaDescribedBy={describedBy} overlayStyle={overlayStyle} modalStyle={modalStyle}>
         <h1 id="dialog-title">Site Navigation</h1>
         <p id="dialog-description" className="sr-only">Description goes here</p>
         <nav>
@@ -43,7 +43,7 @@ const ModalContent = () => {
                 <li><a href="three.html">Link Three</a></li>
             </ul>
         </nav>
-        <button type="button" aria-label="Close Navigation" className="close-dialog"> <i className="fa fa-times"></i> </button>
+        <button type="button" aria-label="Close Navigation" className="close-dialog" onClick={closeAction}> <i className="fa fa-times"></i> </button>
     </InModal>
  )
 }
