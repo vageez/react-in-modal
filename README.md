@@ -10,8 +10,8 @@ Wrapping a React component in an Accessible React Modal using ReactDOM.createPor
 5. Accepts close function as a prop and uses it to close Modal on ESC Keypress, or an click event outside ot the Modal.
 
 ### Implementation Suggestion
-Do not hide and show Modal using CSS.\  
-Rather evaluate some logic in your app.\    
+Do not hide and show Modal using CSS.   
+Rather evaluate some logic in your app.      
 Ex: ```{ modal ? <InModal><Content/></InModal> : <Content/> }```
 
 
