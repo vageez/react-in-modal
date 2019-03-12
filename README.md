@@ -6,7 +6,7 @@ Wrapping a React component in an Accessible React Modal using ReactDOM.createPor
 1. Trap Focus Inside a Modal
 2. Supports Aria labelledBy tag
 3. Supports Aria DescribedBy tag
-4. Injects Modal before the closing </body> tag
+4. Injects Modal before the closing ```</body>``` tag
 5. Accepts close function as a prop and uses it to close Modal on ESC Keypress, or an click event outside ot the Modal.
 
 ### Implementation Suggestion
