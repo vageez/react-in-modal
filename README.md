@@ -2,6 +2,19 @@
 
 Wrapping a React component in an Accessible React Modal using ReactDOM.createPortal
 
+###Features###
+1. Trap Focus Inside a Modal
+2. Supports Aria labelledBy tag
+3. Supports Aria DescribedBy tag
+4. Injects Modal before the closing </body> tag
+5. Accepts close function as a prop and uses it to close Modal on ESC Keypress, or an click event outside ot the Modal.
+
+###Implementation Suggestion###
+Do not hide and show Modal using CSS.
+Rather evaluate some logic in your app. 
+Ex: ```{ modal ? <InModal><Content/></InModal> : <Content/> }```
+
+
 | Property        | Required     | Type     | Description                                                                                                                                                                                                                                                                                                                                                                                                                    |
 |-----------------|--------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | onClose         | Required     | function | This is the redux action or regular function in your application that will close or Unmount the Modal. Once the Modal is rendered this function will be called when pressing the ECS Key or simply clicking outside the Modal.                                                                                                                                                                                                 |
@@ -49,6 +62,12 @@ const ModalContent = () => {
 }
 export default ModalContent
 ```
+
+
+## TODO
+
+Create Unique ids
+Verify focus on load. Do we focus whtn the modal is loaded, or do we focus when Key Tab is pressed?
 
 ## License
 
