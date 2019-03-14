@@ -58,10 +58,13 @@ class InModal extends Component {
     }
     render() {
         const { onClose, modalStyle, overlayStyle, ariaLabelledBy, ariaDescribedBy, children } = this.props
-        const modalRoot = document.createElement('div')
-        modalRoot.setAttribute('id', 'react-in-modal-root')
-        modalRoot.setAttribute('style', 'position: relative; z-index: 2147483647;');
-        document.getElementsByTagName('body')[0].appendChild(modalRoot)
+        var elementExists = document.getElementById('react-in-modal-root');
+        if (!elementExists) {
+            const modalRoot = document.createElement('div')
+            modalRoot.setAttribute('id', 'react-in-modal-root')
+            modalRoot.setAttribute('style', 'position: relative; z-index: 2147483647;');
+            document.getElementsByTagName('body')[0].appendChild(modalRoot)
+        }
         return createPortal(
             <div
                 id='react-in-modal-overlay'
