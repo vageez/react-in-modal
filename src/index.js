@@ -32,22 +32,22 @@ const Dialog = (dialog, close) => {
         }
 
         switch (e.keyCode) {
-            case KEY_TAB:
-                if (focusableEls.length === 1) {
-                    e.preventDefault();
-                    break;
-                }
-                if (e.shiftKey) {
-                    handleBackwardTab();
-                } else {
-                    handleForwardTab();
-                }
+        case KEY_TAB:
+            if (focusableEls.length === 1) {
+                e.preventDefault();
                 break;
-            case KEY_ESC:
-                close();
-                break;
-            default:
-                break;
+            }
+            if (e.shiftKey) {
+                handleBackwardTab();
+            } else {
+                handleForwardTab();
+            }
+            break;
+        case KEY_ESC:
+            close();
+            break;
+        default:
+            break;
         }
     }
 }
@@ -57,7 +57,8 @@ class InModal extends Component {
         Dialog(document.querySelector('#react-in-modal'), this.props.onClose)
     }
     render() {
-        const { onClose, modalStyle, overlayStyle, ariaLabelledBy, ariaDescribedBy, children } = this.props
+        const { onClose, modal, dimmer, ModalComponent, children } = this.props
+
         var elementExists = document.getElementById('react-in-modal-root');
         if (!elementExists) {
             const modalRoot = document.createElement('div')
@@ -65,31 +66,40 @@ class InModal extends Component {
             modalRoot.setAttribute('style', 'position: relative; z-index: 2147483647;');
             document.getElementsByTagName('body')[0].appendChild(modalRoot)
         }
+        const Modal = ModalComponent ?
+            <ModalComponent
+                {...modal}
+                id='react-in-modal'
+                role='dialog'
+                onClick={e => e.stopPropagation()}>
+                {children}
+            </ModalComponent>
+            :
+            <div
+                {...modal}
+                id='react-in-modal'
+                role='dialog'
+                onClick={e => e.stopPropagation()}>
+                {children}
+            </div>
+
         return createPortal(
             <div
                 id='react-in-modal-overlay'
-                style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.7)', ...overlayStyle }}
+                {...dimmer}
                 onClick={() => onClose()}>
-                <div
-                    id='react-in-modal'
-                    style={{ margin: '0 auto', ...modalStyle }}
-                    role='dialog'
-                    onClick={e => e.stopPropagation()}
-                    aria-labelledby={ariaLabelledBy}
-                    aria-describedby={ariaDescribedBy}>
-                    {children}
-                </div>
+                {Modal}
             </div>, document.querySelector('#react-in-modal-root'))
     }
 }
 
 InModal.propTypes = {
     onClose: PropTypes.func.isRequired,
-    modalStyle: PropTypes.object,
-    overlayStyle: PropTypes.object,
+    modal: PropTypes.object,
+    dimmer: PropTypes.object,
     ariaLabelledBy: PropTypes.string,
     ariaDescribedBy: PropTypes.string,
-    children: PropTypes.node.isRequired,
+    ModalComponent: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 }
 
 export default InModal;
