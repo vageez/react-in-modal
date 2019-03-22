@@ -56,13 +56,12 @@ const dimmer = {
                 backgroundColor: 'rgba(0,0,0,0.7)' 
             }
         }       
-        
+
 const ModalContent = () => {
  return(
     <InModal onClose={close} 
             dimmer={dimmer} 
-            modal={modal}
-            ModalComponent={StyledInModal}>
+            modal={modal}>
         <h1 id="dialog-title">Site Navigation</h1>
         <p id="dialog-description" className="sr-only">Description goes here</p>
         <nav>
